@@ -5,9 +5,9 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         # Retrieve the connection string from environment variables
-        connection_string = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
+        connection_string = os.getenv('STORAGE_ACCOUNT_CONNECTION')
         if not connection_string:
-            raise ValueError("AZURE_STORAGE_CONNECTION_STRING environment variable is not set")
+            raise ValueError("STORAGE_ACCOUNT_CONNECTION environment variable is not set")
 
         # Create a BlobServiceClient
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
