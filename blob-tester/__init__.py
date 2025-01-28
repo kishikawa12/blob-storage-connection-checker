@@ -2,7 +2,7 @@ import os
 from azure.storage.blob import BlobServiceClient
 import azure.functions as func
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
+def main(mytimer: func.TimerRequest) -> None:
     try:
         # Retrieve the connection string from environment variables
         connection_string = os.getenv('STORAGE_ACCOUNT_CONNECTION')
@@ -24,6 +24,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         blobs_list = container_client.list_blobs()
         blob_names = [blob.name for blob in blobs_list]
 
-        return func.HttpResponse(f"Blobs in container '{container_name}': {', '.join(blob_names)}")
+        # Log the blob names
+        logging.info(f"Blobs in container '{container_name}': {', '.join(blob_names)}")
     except Exception as e:
-        return func.HttpResponse(f"Failed to connect to blob storage: {e}", status_code=500)
+        logging.error(f"Failed to connect to blob storage: {e}")
