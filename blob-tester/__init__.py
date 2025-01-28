@@ -1,4 +1,5 @@
 import os
+import logging
 from azure.storage.blob import BlobServiceClient
 import azure.functions as func
 
@@ -22,9 +23,11 @@ def main(mytimer: func.TimerRequest) -> None:
 
         # List blobs in the container
         blobs_list = container_client.list_blobs()
-        blob_names = [blob.name for blob in blobs_list]
+        blob_count = sum(1 for _ in blobs_list)
 
-        # Log the blob names
-        logging.info(f"Blobs in container '{container_name}': {', '.join(blob_names)}")
+        # Log the blob count
+        logging.info(f"Found {blob_count} blobs in container '{container_name}'")
+    except ValueError as ve:
+        logging.error(f"Configuration error: {ve}")
     except Exception as e:
-        logging.error(f"Failed to connect to blob storage: {e}")
+        logging.error(f"Failed to connect to blob storage: {e}", exc_info=True)
